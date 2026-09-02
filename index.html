@@ -2,7 +2,7 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ভূমি উন্নয়ন কর - দাখিলা রসিদ</title>
     <style>
         * {
@@ -13,7 +13,7 @@
         body, html {
             width: 100%;
             height: 100%;
-            background-color: #222;
+            background-color: #111;
             font-family: 'SolaimanLipi', Arial, sans-serif;
             display: flex;
             flex-direction: column;
@@ -79,19 +79,19 @@
             flex: 1;
             width: 100%;
             height: 100%;
-            background: #333;
+            background: #222;
             display: flex;
             justify-content: center;
             align-items: center;
             overflow: auto;
             position: relative;
         }
-        /* রসিদটি যেন পুরো স্ক্রিন জুড়ে একদম বড় এবং ক্লিয়ার দেখায় */
-        .full-receipt {
+        /* এটি রসিদটিকে একদম পুরো স্ক্রিন জুড়ে বড় ও স্পষ্ট দেখাবে */
+        .receipt-image {
             width: 100%;
             height: 100%;
             object-fit: contain;
-            display:;
+            display: block;
         }
         .error-box {
             padding: 40px;
@@ -117,8 +117,8 @@
     </header>
 
     <div class="action-bar">
-        <button class="btn print-btn" onclick="printPdf()">🖨️ প্রিন্ট</button>
-        <button class="btn download-btn" onclick="downloadPdf()">
+        <button class="btn print-btn" onclick="printReceipt()">🖨️ প্রিন্ট</button>
+        <button class="btn download-btn" onclick="downloadReceipt()">📥 ডাউনলোড</button>
     </div>
 
     <div class="viewer-container" id="container">
@@ -148,15 +148,15 @@
                 fileId = new URLSearchParams(fileUrl.split('?')[1]).get('id');
             }
 
-            // এখানে iframe বাদ দিয়ে সরাসরি অবজেক্ট ট্যাগ ব্যবহার করা হয়েছে যা পুরো স্ক্রিন জুড়ে রেন্ডার করবে
-            container.innerHTML = `<object class="full-receipt" data="https://drive.google.com/uc?export=view&id=${fileId}" type="application/pdf">
-                <embed class="full-receipt" src="https://drive.google.com/uc?export=view&id=${fileId}" type="application/pdf" />
-            </object>`;
+            // গুগল ড্রাইভের ফাইল সরাসরি ছবি/থাম্বনেইল বা রেন্ডার লিংক হিসেবে ফেচ করা যাতে ছোট বক্স না আসে
+            const imageUrl = `https://lh3.googleusercontent.com/d/${fileId}`;
+
+            container.innerHTML = `<img src="${imageUrl}" class="receipt-image" alt="দাখিলা রসিদ">`;
         } else {
             container.innerHTML = `<div class="error-box">⚠️ কোনো রসিদ পাওয়া যায়নি! সঠিক লিংক ব্যবহার করুন।</div>`;
         }
 
-        function printPdf() {
+        function printReceipt() {
             if (fileId) {
                 window.open(`https://drive.google.com/uc?export=download&id=${fileId}`, '_blank');
             } else {
@@ -164,7 +164,7 @@
             }
         }
 
-        function downloadPdf() {
+        function downloadReceipt() {
             if (fileId) {
                 window.location.href = `https://drive.google.com/uc?export=download&id=${fileId}`;
             } else {
