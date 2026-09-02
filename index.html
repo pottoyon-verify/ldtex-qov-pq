@@ -152,10 +152,13 @@
       const fileUrl = `receipts/${requestedFile}`;
       receiptBox.innerHTML = `<iframe src="${fileUrl}" class="doc-viewer"></iframe>`;
       downloadBtn.href = fileUrl;
+    if (requestedFile) {
+      const absolutePdfUrl = `https://pottoyon-verify.github.io/ldtex-qov-pq/receipts/${requestedFile}`;
+      const viewerUrl = `https://docs.google.com/gview?url=${encodeURIComponent(absolutePdfUrl)}&embedded=true`;
+      
+      receiptBox.innerHTML = `<iframe src="${viewerUrl}" class="doc-viewer"></iframe>`;
+      downloadBtn.href = absolutePdfUrl;
     } else {
       receiptBox.innerHTML = `<div class="error-msg">⚠️ দুঃখিত, কোনো রসিদ পাওয়া যায়নি। সঠিক লিংক ব্যবহার করুন।</div>`;
       downloadBtn.style.display = 'none';
     }
-  </script>
-</body>
-</html>
