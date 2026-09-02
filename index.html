@@ -1,9 +1,9 @@
-<DOCTYPE html>
+<"DOCTYPE html>
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <title>ভূমি উন্নয়ন কর - দাখিলা রসিদ</title>
+    <title>ভূমি উন্নয়ন কর` - দাখিলা রসিদ</title>
     <style>
         * {
             box-sizing: border-box;
@@ -58,52 +58,30 @@
             font-weight: bold;
             color: #111;
         }
-        .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .lang-btn {
-            border: 1px solid #ccc;
-            background: #fff;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            cursor: pointer;
-        }
-        .lang-btn.active {
-            background: #1b5e20;
-            color: white;
-            border-color: #1b5e20;
-        }
-        .login-btn {
-            background-color: #1b5e20;
-            color: white;
-            border: none;
-            padding: 5px 12px;
-            border-radius: 4px;
-            font-size: 13px;
-            cursor: pointer;
-        }
         .action-bar {
             background-color: #f8f9fa;
-            padding: 12px;
+            padding: 10px;
             text-align: center;
             border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        .btn {
+            border: none;
+            padding: 8px 18px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         .print-btn {
             background-color: #1976d2;
-            color: white;
-            border: none;
-            padding: 8px 24px;
-            border-radius: 4px;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        .print-btn:hover {
-            background-color: #115293;
+        .download-btn {
+            background-color: #388e3c;
         }
         .viewer-container {
             flex: 1;
@@ -114,28 +92,13 @@
             align-items: center;
             position: relative;
             overflow: hidden;
-            height: 75vh;
-            touch-action: none;
+            min-height: 75vh;
         }
-        .receipt-wrapper {
+        .receipt-frame {
             width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: grab;
-            transform-origin: center;
-            user-select: none;
-            transition: transform 0.05s ease-out;
-        }
-        .receipt-wrapper:active {
-            cursor: grabbing;
-        }
-        img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-            pointer-events: none;
+            height: 75vh;
+            border: none;
+            background: #fff;
         }
         .error-box {
             padding: 40px 20px;
@@ -148,31 +111,26 @@
 </head>
 <body>
 
-    <div class="top-bar" id="current-date-banner">
-        লোড হচ্ছে...
-    </div>
+    <div class="top-bar" id="current-date-banner">লোড হচ্ছে...</div>
 
     <header>
         <div class="logo-area">
             <div class="logo-icon">৳</div>
             <div class="brand-title">ভূমি উন্নয়ন কর</div>
         </div>
-        <div class="nav-right">
-            <button class="lang-btn active">বাং</button>
-            <button class="lang-btn">EN</button>
-            <button class="login-btn">লগইন ▼</button>
-        </div>
     </header>
 
     <div class="action-bar">
-        <button class="print-btn" onclick="printReceipt()">🖨️ প্রিন্ট / ডাউনলোড</button>
+        <button class="btn print-btn" onclick="printReceipt()">🖨️ প্রিন্ট</button>
+        <button class="btn download-btn" onclick="downloadReceipt()">📥 ডাউনলোড</button>
     </div>
 
     <div class="viewer-container" id="container">
-        <!-- Viewer will load here -->
+        <!-- Viewer load -->
     </div>
 
     <script>
+        // তারিখ ও বাংলা রূপান্তর
         function updateDateTime() {
             const days = ['রবিবার', 'সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার', 'শুক্রবার', 'শনিবার'];
             const months = ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'];
@@ -193,98 +151,44 @@
 
         updateDateTime();
 
+        // ইউআরএল থেকে ফাইল আইডি বা লিংক নেওয়া
         const urlParams = new URLSearchParams(window.location.search);
         const fileUrl = urlParams.get('file');
         const container = document.getElementById('container');
-
-        let targetSrc = '';
+        let fileId = '';
 
         if (fileUrl) {
-            targetSrc = fileUrl;
-            if(!fileUrl.startsWith('http')) {
-                targetSrc = `https://lh3.googleusercontent.com/d/${fileUrl}`;
-            } else if(fileUrl.includes('drive.google.com') && fileUrl.includes('id=')) {
-                const idMatch = new URLSearchParams(fileUrl.split('?')[1]).get('id');
-                if(idMatch) targetSrc = `https://lh3.googleusercontent.com/d/${idMatch}`;
-            } else if(fileUrl.includes('drive.google.com') && fileUrl.includes('/file/d/')) {
-                const idMatch = fileUrl.split('/file/d/')[1].split('/')[0];
-                if(idMatch) targetSrc = `https://lh3.googleusercontent.com/d/${idMatch}`;
+            fileId = fileUrl;
+            if (fileUrl.includes('/file/d/')) {
+                fileId = fileUrl.split('/file/d/')[1].split('/')[0];
+            } else if (fileUrl.includes('id=')) {
+                fileId = new URLSearchParams(fileUrl.split('?')[1]).get('id');
             }
 
-            container.innerHTML = `
-                <div class="receipt-wrapper" id="receiptWrapper">
-                    <img id="receiptTarget" src="${targetSrc}" alt="দাখিলা রসিদ">
-                </div>
-            `;
+            // গুগল ড্রাইভের সঠিক এমবেড লিংক যা সাদা স্ক্রিন সমস্যার সমাধান করবে
+            const viewSrc = `https://docs.google.com/gview?url=https://drive.google.com/uc?export=download&id=${fileId}&embedded=true`;
+            
+            // বিকল্প হিসেবে সরাসরি ড্রাইভ প্রিভিউ লিংক ব্যবহারের জন্য
+            const directPreview = `https://drive.google.com/file/d/${fileId}/preview`;
 
-            // প্যান ও জুম লজিক
-            const wrapper = document.getElementById('receiptWrapper');
-            let scale = 1, pX = 0, pY = 0;
-            let isDragging = false, startX, startY;
-
-            wrapper.addEventListener('mousedown', (e) => {
-                isDragging = true;
-                startX = e.clientX - pX;
-                startY = e.clientY - pY;
-                e.preventDefault();
-            });
-
-            window.addEventListener('mousemove', (e) => {
-                if (!isDragging) return;
-                pX = e.clientX - startX;
-                pY = e.clientY - startY;
-                updateTransform();
-            });
-
-            window.addEventListener('mouseup', () => { isDragging = false; });
-
-            wrapper.addEventListener('touchstart', (e) => {
-                if (e.touches.length === 1) {
-                    isDragging = true;
-                    startX = e.touches.[0].clientX - pX;
-                    startY = e.touches[0].clientY - pY;
-                }
-            });
-
-            window.addEventListener('touchmove', (e) => {
-                if (!isDragging || e.touches.length !== 1) return;
-                pX = e.touches[0].clientX - startX;
-                pY = e.touches[0].clientY - startY;
-                updateTransform();
-            });
-
-            window.addEventListener('touchend', () => { isDragging = false; });
-
-            container.addEventListener('wheel', (e) => {
-                e.preventDefault();
-                const zoomIntensity = 0.1;
-                if (e.deltaY < 0) {
-                    scale += zoomIntensity;
-                } else {
-                    scale = Math.max(1, scale - zoomIntensity);
-                    if (scale === 1) { pX = 0; pY = 0; }
-                }
-                updateTransform();
-            });
-
-            function updateTransform() {
-                wrapper.style.transform = `translate(${pX}px, ${pY}px) scale(${scale})`;
-            }
-
+            container.innerHTML = `<iframe class="receipt-frame" src="${directPreview}"></iframe>`;
         } else {
             container.innerHTML = `<div class="error-box">⚠️ দুঃখিত, সঠিক রসিদটি পাওয়া যায়নি!</div>`;
         }
 
         function printReceipt() {
-            if (!targetSrc) {
-                alert('প্রিন্ট করার মত কোনো রসিদ পাওয়া যায়নি!');
-                return;
-            }
-            const printWindow = window.open(targetSrc, '_blank');
-            if (printWindow) {
-                printWindow.focus();
+            if (fileId) {
+                window.open(`https://drive.google.com/file/d/${fileId}/view`, '_blank');
             } else {
-                alert('পপ-আপ ব্লক করা আছে! দয়া করে ব্রাউজারের পপ-আপ এলাও করুন।');
+                alert('রসিদ পাওয়া যায়নি!');
+            }
+        }
+
+        function downloadReceipt() {
+            if (fileId) {
+                window.location.href = `https://drive.google.com/uc?export=download&id=${fileId}`;
+            } else {
+                alert('ডাউনলোড লিংক পাওয়া যায়নি!');
             }
         }
     </script>
