@@ -5,11 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ভূমি উন্নয়ন কর - দাখিলা রসিদ</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body, html {
             width: 100%;
             height: 100%;
@@ -23,7 +19,7 @@
             background-color: #1b5e20;
             color: white;
             text-align: center;
-            padding: 5px;
+            padding: 6px;
             font-size: 13px;
         }
         header {
@@ -34,74 +30,42 @@
             align-items: center;
             border-bottom: 1px solid #ddd;
         }
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+        .logo-area { display: flex; align-items: center; gap: 8px; }
         .logo-icon {
-            background-color: #f9a825;
-            color: white;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
-            border-radius: 4px;
+            background-color: #f9a825; color: white;
+            width: 32px; height: 32px; display: flex;
+            justify-content: center; align-items: center;
+            font-weight: bold; border-radius: 4px;
         }
-        .brand-title {
-            font-size: 16px;
-            font-weight: bold;
-        }
+        .brand-title { font-size: 16px; font-weight: bold; }
         .action-bar {
-            background-color: #f1f3f4;
-            padding: 8px;
-            text-align: center;
-            border-bottom: 1px solid #ccc;
-            display: flex;
-            justify-content: center;
-            gap: 12px;
+            background-color: #f1f3f4; padding: 8px;
+            text-align: center; border-bottom: 1px solid #ccc;
+            display: flex; justify-content: center; gap: 12px;
         }
         .btn {
-            border: none;
-            padding: 6px 16px;
-            border-radius: 4px;
-            font-size: 13px;
-            font-weight: bold;
-            cursor: pointer;
-            color: white;
+            border: none; padding: 6px 16px; border-radius: 4px;
+            font-size: 13px; font-weight: bold; cursor: pointer; color: white;
+            text-decoration: none; display: inline-block;
         }
         .print-btn { background-color: #1976d2; }
         .download-btn { background-color: #388e3c; }
 
         .viewer-container {
-            flex: 1;
-            width: 100%;
-            height: 100%;
-            background: #222;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            flex: 1; width: 100%; height: 100%;
+            background: #222; display: flex;
+            justify-content: center; align-items: center;
             overflow: auto;
-            position: relative;
         }
-        /* এটি রসিদটিকে একদম পুরো স্ক্রিন জুড়ে বড় ও স্পষ্ট দেখাবে */
-        .receipt-image {
+        embed, iframe {
             width: 100%;
             height: 100%;
-            object-fit: contain;
-            display: block;
+            border: none;
         }
         .error-box {
-            padding: 40px;
-            text-align: center;
-            color: #ff5252;
-            font-size: 16px;
-            font-weight: bold;
-            background: white;
-            width: 100%;
-            height: 100%;
+            padding: 40px; text-align: center; color: #ff5252;
+            font-size: 16px; font-weight: bold; background: white;
+            width: 100%; height: 100%;
         }
     </style>
 </head>
@@ -117,13 +81,11 @@
     </header>
 
     <div class="action-bar">
-        <button class="btn print-btn" onclick="printReceipt()">🖨️ প্রিন্ট</button>
-        <button class="btn download-btn" onclick="downloadReceipt()">📥 ডাউনলোড</button>
+        <button class="btn print-btn" onclick="printPdf()">🖨️ প্রিন্ট</button>
+        <a id="downloadLink" href="#" download class="btn download-btn">📥 ডাউনলোড</a>
     </div>
 
-    <div class="viewer-container" id="container">
-        <!-- রসিদ লোড হবে -->
-    </div>
+    <div class="viewer-container" id="container"></div>
 
     <script>
         // বাংলা তারিখ জেনারেটর
@@ -134,41 +96,28 @@
         function toBn(n) { return n.toString().split('').map(d => bDigits[d] !== undefined ? bDigits[d] : d).join(''); }
         document.getElementById('current-date-banner').innerText = `${days[now.getDay()]}, ${toBn(now.getDate())} ${months[now.getMonth()]}, ${toBn(now.getFullYear())}`;
 
-        // লিংক থেকে ফাইল আইডি নেওয়া
+        // ইউআরএল থেকে ফাইল নাম রিড করা
         const urlParams = new URLSearchParams(window.location.search);
-        const fileUrl = urlParams.get('file');
+        const fileName = urlParams.get('file');
         const container = document.getElementById('container');
-        let fileId = '';
+        const downloadBtn = document.getElementById('downloadLink');
 
-        if (fileUrl) {
-            fileId = fileUrl;
-            if (fileUrl.includes('/file/d/')) {
-                fileId = fileUrl.split('/file/d/')[1].split('/')[0];
-            } else if (fileUrl.includes('id=')) {
-                fileId = new URLSearchParams(fileUrl.split('?')[1]).get('id');
-            }
-
-            // গুগল ড্রাইভের ফাইল সরাসরি ছবি/থাম্বনেইল বা রেন্ডার লিংক হিসেবে ফেচ করা যাতে ছোট বক্স না আসে
-            const imageUrl = `https://lh3.googleusercontent.com/d/${fileId}`;
-
-            container.innerHTML = `<img src="${imageUrl}" class="receipt-image" alt="দাখিলা রসিদ">`;
+        if (fileName) {
+            const fileUrl = `receipts/${fileName}`;
+            container.innerHTML = `<embed src="${fileUrl}" type="application/pdf">`;
+            downloadBtn.href = fileUrl;
         } else {
             container.innerHTML = `<div class="error-box">⚠️ কোনো রসিদ পাওয়া যায়নি! সঠিক লিংক ব্যবহার করুন।</div>`;
         }
 
-        function printReceipt() {
-            if (fileId) {
-                window.open(`https://drive.google.com/uc?export=download&id=${fileId}`, '_blank');
+        function printPdf() {
+            if (fileName) {
+                const pdfWindow = window.open(`receipts/${fileName}`, '_blank');
+                if (pdfWindow) {
+                    pdfWindow.print();
+                }
             } else {
-                alert('রসিদ পাওয়া যায়নি!');
-            }
-        }
-
-        function downloadReceipt() {
-            if (fileId) {
-                window.location.href = `https://drive.google.com/uc?export=download&id=${fileId}`;
-            } else {
-                alert('ডাউনলোড ফাইল পাওয়া যায়নি!');
+                alert('প্রিন্ট করার মতো কোনো ফাইল পাওয়া যায়নি!');
             }
         }
     </script>
