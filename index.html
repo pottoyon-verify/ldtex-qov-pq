@@ -1,209 +1,256 @@
 <DOCTYPE html>
 <html lang="bn">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>দাখিলা যাচাই</title>
-
-<style>
-*{
-  box-sizing:border-box;
-}
-
-html,body{
-  margin:0;
-  padding:0;
-  width:100%;
-  height:100%;
-  background:#ddd;
-  font-family:Arial,"Noto Sans Bengali",sans-serif;
-}
-
-body{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
-
-.frame{
-  width:100%;
-  max-width:480px;
-  height:100vh;
-  max-height:900px;
-  background:#fff;
-  border-left:4px dotted #17833b;
-  border-right:4px dotted #17833b;
-  display:flex;
-  flex-direction:column;
-  overflow:hidden;
-}
-
-.date{
-  background:linear-gradient(90deg,#087f39,#32a852);
-  color:white;
-  text-align:center;
-  font-size:18px;
-  font-weight:bold;
-  padding:10px;
-}
-
-.print-area{
-  padding:8px;
-  text-align:center;
-  background:#f5f5f5;
-}
-
-.print-btn{
-  border:0;
-  background:#0877d1;
-  color:white;
-  padding:10px 28px;
-  border-radius:5px;
-  font-size:17px;
-  font-weight:bold;
-  cursor:pointer;
-}
-
-.viewer{
-  flex:1;
-  overflow:auto;
-  background:#eee;
-  display:flex;
-  justify-content:center;
-  align-items:flex-start;
-  padding:8px;
-}
-
-.viewer img{
-  display:block;
-  width:100%;
-  height:auto;
-}
-
-.viewer iframe{
-  width:100%;
-  height:100%;
-  border:0;
-  background:white;
-}
-
-.bottom{
-  height:35px;
-  background:linear-gradient(90deg,#087f39,#56b870,#087f39);
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>ভূমি উন্নয়ন কর - দাখিলা রসিদ</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'SolaimanLipi', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .top-bar {
+            background-color: #1b5e20;
+            color: white;
+            text-align: center;
+            padding: 8px 10px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        header {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo-icon {
+            background-color: #f9a825;
+            color: white;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 20px;
+            border-radius: 4px;
+        }
+        .brand-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #111;
+        }
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .lang-btn {
+            border: 1px solid #ccc;
+            background: #fff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .lang-btn.active {
+            background: #1b5e20;
+            color: white;
+            border-color: #1b5e20;
+        }
+        .login-btn {
+            background-color: #1b5e20;
+            color: white;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        .action-bar {
+            background-color: #f8f9fa;
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+        .print-btn {
+            background-color: #1976d2;
+            color: white;
+            border: none;
+            padding: 8px 24px;
+            border-radius: 4px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .print-btn:hover {
+            background-color: #115293;
+        }
+        .viewer-container {
+            flex: 1;
+            width: 100%;
+            background: #e9ecef;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            height: 75vh;
+            touch-action: none;
+        }
+        .receipt-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            cursor: grab;
+            transform-origin: center;
+            user-select: none;
+            transition: transform 0.05s ease-out;
+        }
+        .receipt-image:active {
+            cursor: grabbing;
+        }
+        .error-box {
+            padding: 40px 20px;
+            text-align: center;
+            color: #d32f2f;
+            font-size: 16px;
+            font-weight: bold;
+        }
+    </style>
 </head>
-
 <body>
 
-<div class="frame">
+    <div class="top-bar" id="current-date-banner">
+        লোড হচ্ছে...
+    </div>
 
-  <div class="date" id="date"></div>
+    <header>
+        <div class="logo-area">
+            <div class="logo-icon">৳</div>
+            <div class="brand-title">ভূমি উন্নয়ন কর</div>
+        </div>
+        <div class="nav-right">
+            <button class="lang-btn active">বাং</button>
+            <button class="lang-btn">EN</button>
+            <button class="login-btn">লগইন ▼</button>
+        </div>
+    </header>
 
-  <div class="print-area">
-    <button class="print-btn" onclick="printFile()">
-      🖨 প্রিন্ট
-    </button>
-  </div>
+    <div class="action-bar">
+        <button class="print-btn" onclick="window.print()">🖨️ প্রিন্ট</button>
+    </div>
 
-  <div class="viewer" id="viewer">
-    ফাইল লোড হচ্ছে...
-  </div>
+    <div class="viewer-container" id="container">
+        <!-- Image Viewer will load here -->
+    </div>
 
-  <div class="bottom"></div>
+    <script>
+        function updateDateTime() {
+            const days = ['রবিবার', 'সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার', 'শুক্রবার', 'শনিবার'];
+            const months = ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'];
+            
+            const now = new Date();
+            const dayName = days[now.getDay()];
+            const dayNum = convertToBengaliNumber(now.getDate());
+            const monthName = months[now.getMonth()];
+            const yearNum = convertToBengaliNumber(now.getFullYear());
 
-</div>
+            document.getElementById('current-date-banner').innerText = `${dayName}, ${dayNum} ${monthName}, ${yearNum}`;
+        }
 
-<script>
+        function convertToBengaliNumber(num) {
+            const bengaliDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+            return num.toString().split('').map(d => bengaliDigits[d] !== undefined ? bengaliDigits[d] : d).join('');
+        }
 
-function showDate(){
+        updateDateTime();
 
-  const now = new Date();
+        const urlParams = new URLSearchParams(window.location.search);
+        const fileName = urlParams.get('file');
+        const container = document.getElementById('container');
 
-  const days = [
-    "রবিবার",
-    "সোমবার",
-    "মঙ্গলবার",
-    "বুধবার",
-    "বৃহস্পতিবার",
-    "শুক্রবার",
-    "শনিবার"
-  ];
+        if (fileName) {
+            container.innerHTML = `<img id="receiptImg" class="receipt-image" src="${fileName}" alt="রসিদ ছবি">`;
+            
+            // Touch & Mouse Pan/Zoom Logic (App-like smooth movement)
+            const img = document.getElementById('receiptImg');
+            let scale = 1, pX = 0, pY = 0;
+            let isDragging = false, startX, startY;
 
-  const day = days[now.getDay()];
-  const date = String(now.getDate()).padStart(2,"0");
-  const month = String(now.getMonth()+1).padStart(2,"0");
-  const year = now.getFullYear();
+            img.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                startX = e.clientX - pX;
+                startY = e.clientY - pY;
+                e.preventDefault();
+            });
 
-  document.getElementById("date").innerText =
-    `${date}-${month}-${year} | ${day}`;
-}
+            window.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                pX = e.clientX - startX;
+                pY = e.clientY - startY;
+                updateTransform();
+            });
 
+            window.addEventListener('mouseup', () => { isDragging = false; });
 
-function loadFile(){
+            // Touch events for mobile
+            img.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 1) {
+                    isDragging = true;
+                    startX = e.touches[0].clientX - pX;
+                    startY = e.touches[0].clientY - pY;
+                }
+            });
 
-  const params = new URLSearchParams(window.location.search);
+            window.addEventListener('touchmove', (e) => {
+                if (!isDragging || e.touches.length !== 1) return;
+                pX = e.touches[0].clientX - startX;
+                pY = e.touches[0].clientY - startY;
+                updateTransform();
+            });
 
-  const file = params.get("file");
+            window.addEventListener('touchend', () => { isDragging = false; });
 
-  const viewer = document.getElementById("viewer");
+            // Mouse wheel zoom
+            container.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const zoomIntensity = 0.1;
+                if (e.deltaY < 0) {
+                    scale += zoomIntensity;
+                } else {
+                    scale = Math.max(1, scale - zoomIntensity);
+                    if (scale === 1) { pX = 0; pY = 0; }
+                }
+                updateTransform();
+            });
 
-  if(!file){
-    viewer.innerHTML =
-      "<div style='padding:30px;text-align:center'>ফাইল পাওয়া যায়নি</div>";
-    return;
-  }
+            function updateTransform() {
+                img.style.transform = `translate(${pX}px, ${pY}px) scale(${scale})`;
+            }
 
-  const ext = file.split(".").pop().toLowerCase();
-
-  if(
-    ext === "jpg" ||
-    ext === "jpeg" ||
-    ext === "png" ||
-    ext === "webp" ||
-    ext === "gif"
-  ){
-
-    const img = document.createElement("img");
-
-    img.src = "files/" + file;
-
-    img.alt = "ডকুমেন্ট";
-
-    viewer.innerHTML = "";
-
-    viewer.appendChild(img);
-
-  }else if(ext === "pdf"){
-
-    const iframe = document.createElement("iframe");
-
-    iframe.src = "files/" + file;
-
-    viewer.innerHTML = "";
-
-    viewer.appendChild(iframe);
-
-  }else{
-
-    viewer.innerHTML =
-      "<div style='padding:30px;text-align:center'>এই ফাইলটি দেখা যাচ্ছে না</div>";
-  }
-}
-
-
-function printFile(){
-
-  window.print();
-
-}
-
-
-showDate();
-loadFile();
-
-</script>
-
+        } else {
+            container.innerHTML = `<div class="error-box">⚠️ দুঃখিত, সঠিক রসিদটি পাওয়া যায়নি!</div>`;
+        }
+    </script>
 </body>
 </html>
