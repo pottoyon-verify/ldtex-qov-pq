@@ -1,4 +1,4 @@
-<DOCTYPE html>
+<!DOCTYPE html>
 <html lang="bn">
   <head>
     <meta charset="UTF-8">
@@ -165,16 +165,23 @@
         encodeURIComponent(requestedFile);
 
       /*
-       * সরাসরি PDF দেখানো হচ্ছে।
-       * PDF.js ব্যবহার করা হয়নি, তাই external viewer-এর
-       * loading/CORS সমস্যার সম্ভাবনা কম।
+       * Android Chrome-এ iframe-এর ভিতরে PDF viewer অনেক সময়
+       * দেখা যায় না। তাই object/embed ব্যবহার করা হচ্ছে।
+       * এতে PDF পেজের ভেতরেই দেখানোর চেষ্টা করবে।
        */
       receiptBox.innerHTML = `
-        <iframe
+        <object
           id="pdfViewer"
-          src="${absolutePdfUrl}"
+          data="${absolutePdfUrl}"
+          type="application/pdf"
           title="ভূমি উন্নয়ন কর রসিদ">
-        </iframe>
+          <embed
+            src="${absolutePdfUrl}"
+            type="application/pdf"
+            width="100%"
+            height="100%">
+          </embed>
+        </object>
       `;
 
       /*
