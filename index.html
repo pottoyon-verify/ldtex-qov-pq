@@ -2,137 +2,105 @@
 <html lang="bn">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>ভূমি উন্নয়ন কর - ldtax.gov.bd</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ভূমি উন্নয়ন কর - রসিদ যাচাই</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'SolaimanLipi', Arial, sans-serif; }
-    body { background-color: #f4fbf7; min-height: 100vh; display: flex; flex-direction: column; }
-
-    .top-sticky-header {
-      position: sticky;
-      top: 0;
-      z-index: 999;
-      background: #ffffff;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    body {
+      font-family: 'SolaimanLipi', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f7f6;
+      color: #333;
     }
-    
-    .top-banner { background-color: #006a4e; color: #ffffff; text-align: center; padding: 6px 10px; font-size: 13px; font-weight: bold; }
-    
-    .navbar { background-color: #ffffff; display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-bottom: 1px solid #e0e0e0; }
-    .brand-section { display: flex; align-items: center; gap: 8px; }
-    .logo-box { background-color: #e6a100; color: #ffffff; width: 36px; height: 36px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; }
-    .brand-title { font-size: 18px; font-weight: bold; color: #222222; }
-    .nav-controls { display: flex; align-items: center; gap: 6px; }
-    .lang-toggle { border: 1px solid #006a4e; border-radius: 4px; overflow: hidden; display: flex; }
-    .lang-btn { padding: 3px 7px; font-size: 12px; font-weight: bold; }
-    .lang-btn.bn { background-color: #006a4e; color: #ffffff; }
-    .lang-btn.en { background-color: #ffffff; color: #006a4e; }
-    .login-btn { background-color: #006a4e; color: #ffffff; border: none; padding: 5px 10px; font-size: 12px; font-weight: bold; border-radius: 12px; display: flex; align-items: center; gap: 3px; }
-
-    .menu-bar { background-color: #ffffff; padding: 8px 12px; border-bottom: 1px solid #e0e0e0; }
-    .hamburger-icon { width: 20px; height: 14px; display: flex; flex-direction: column; justify-content: space-between; }
-    .hamburger-icon span { display: block; height: 2px; background-color: #006a4e; border-radius: 1px; }
-
-    .print-bar {
+    header {
+      background-color: #006a4e;
+      color: white;
+      padding: 15px 20px;
       display: flex;
-      justify-content: center;
-      padding: 10px 0;
-      background-color: #f4fbf7;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo-area {
+      display: flex;
+      align-items: center;
       gap: 10px;
     }
-
-    .btn-action {
-      background-color: #3b7ddd;
-      color: #ffffff;
-      border: 1px solid #2f65b9;
-      padding: 6px 18px;
-      border-radius: 4px;
-      font-size: 14px;
+    .logo-area span {
+      font-size: 20px;
       font-weight: bold;
+    }
+    .container {
+      max-width: 900px;
+      margin: 20px auto;
+      padding: 0 15px;
+    }
+    .action-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    .btn {
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
       cursor: pointer;
+      text-decoration: none;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      text-decoration: none;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      gap: 8px;
+      color: white;
     }
-    .btn-download { background-color: #388e3c; border-color: #2e7d32; }
-
-    .scroll-container {
-      flex: 1;
-      width: 100%;
-      overflow-x: auto;
-      overflow-y: auto;
-      background-color: #f4fbf7;
-      padding: 0 10px 20px 10px;
-      -webkit-overflow-scrolling: touch;
+    .btn-print {
+      background-color: #2b70fa;
     }
-
-    .receipt-paper {
-      width: 780px;
-      margin: 0 auto;
-      background: #ffffff;
+    .btn-download {
+      background-color: #2e8b57;
+    }
+    #receipt {
+      background: white;
       padding: 10px;
-      border: 1px dashed #7eb382;
-      border-radius: 6px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      min-height: 500px;
       display: flex;
-      flex-direction: column;
+      justify-content: center;
       align-items: center;
     }
-
-    .doc-viewer {
+    .doc-viewer, object, embed {
       width: 100%;
-      min-height: 900px;
+      height: 75vh;
       border: none;
     }
-
     .error-msg {
-      color: #d32f2f;
-      padding: 30px;
-      font-weight: bold;
+      color: #d9534f;
+      font-size: 18px;
       text-align: center;
-      font-size: 16px;
-    }
-
-    @media print {
-      .top-sticky-header, .print-bar, .no-print { display: none !important; }
-      body { background: #fff; }
-      .scroll-container { overflow: visible; padding: 0; background: #fff; }
-      .receipt-paper { width: 100%; border: none; padding: 0; }
+      padding: 20px;
     }
   </style>
 </head>
 <body>
 
-  <div class="top-sticky-header">
-    <div class="top-banner" id="live-date"></div>
+  <header>
+    <div class="logo-area">
+      <div style="background: #f4b400; padding: 5px 12px; border-radius: 4px; font-weight: bold; color: black;">৳</div>
+      <span>ভূমি উন্নয়ন কর</span>
+    </div>
+    <div id="live-date" style="font-size: 14px;"></div>
+  </header>
 
-    <div class="navbar">
-      <div class="brand-section">
-        <div class="logo-box">৳</div>
-        <div class="brand-title">ভূমি উন্নয়ন কর</div>
-      </div>
-      <div class="nav-controls">
-        <div class="lang-toggle">
-          <span class="lang-btn bn">বাং</span>
-          <span class="lang-btn en">EN</span>
-        </div>
-        <button class="login-btn">লগইন <span>▼</span></button>
-      </div>
+  <div class="container">
+    <div class="action-buttons">
+      <button onclick="window.print()" class="btn btn-print">🖨️ প্রিন্ট</button>
+      <a id="downloadBtn" href="#" class="btn btn-download" download>📥 ডাউনলোড</a>
     </div>
 
-    <div class="menu-bar">
-      <div class="hamburger-icon"><span></span><span></span><span></span></div>
+    <div id="receipt">
+      <!-- রসিদ এখানে লোড হবে -->
     </div>
-  </div>
-
-  <div class="print-bar no-print">
-    <button class="btn-action" onclick="window.print()">🖨️ প্রিন্ট</button>
-    <a id="downloadBtn" href="#" download class="btn-action btn-download">📥 ডাউনলোড</a>
-  </div>
-
-  <div class="scroll-container">
-    <div class="receipt-paper" id="receipt"></div>
   </div>
 
   <script>
@@ -149,16 +117,20 @@
     const downloadBtn = document.getElementById('downloadBtn');
 
     if (requestedFile) {
-      const fileUrl = `receipts/${requestedFile}`;
-      receiptBox.innerHTML = `<iframe src="${fileUrl}" class="doc-viewer"></iframe>`;
-      downloadBtn.href = fileUrl;
-    if (requestedFile) {
       const absolutePdfUrl = `https://pottoyon-verify.github.io/ldtex-qov-pq/receipts/${requestedFile}`;
-      const viewerUrl = `https://docs.google.com/gview?url=${encodeURIComponent(absolutePdfUrl)}&embedded=true`;
       
-      receiptBox.innerHTML = `<iframe src="${viewerUrl}" class="doc-viewer"></iframe>`;
+      // মোবাইল এবং কম্পিউটারে নিখুঁতভাবে পিডিএফ দেখানোর জন্য অবজেক্ট ও এম্বেড ট্যাগ ব্যবহার করা হলো
+      receiptBox.innerHTML = `
+        <object data="${absolutePdfUrl}#toolbar=0&view=FitH" type="application/pdf">
+          <embed src="${absolutePdfUrl}#toolbar=0&view=FitH" type="application/pdf" />
+        </object>
+      `;
       downloadBtn.href = absolutePdfUrl;
     } else {
       receiptBox.innerHTML = `<div class="error-msg">⚠️ দুঃখিত, কোনো রসিদ পাওয়া যায়নি। সঠিক লিংক ব্যবহার করুন।</div>`;
       downloadBtn.style.display = 'none';
     }
+  </script>
+
+</body>
+</html>
