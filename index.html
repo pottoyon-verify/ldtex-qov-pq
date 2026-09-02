@@ -1,8 +1,8 @@
-<DOCTYPE html>
+<!DOCTYPE html>
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>ভূমি উন্নয়ন কর - দাখিলা রসিদ</title>
     <style>
         * {
@@ -13,8 +13,8 @@
         body, html {
             width: 100%;
             height: 100%;
+            background-color: #222;
             font-family: 'SolaimanLipi', Arial, sans-serif;
-            background-color: #111;
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -72,12 +72,9 @@
             cursor: pointer;
             color: white;
         }
-        .print-btn {
-            background-color: #1976d2;
-        }
-        .download-btn {
-            background-color: #388e3c;
-        }
+        .print-btn { background-color: #1976d2; }
+        .download-btn { background-color: #388e3c; }
+
         .viewer-container {
             flex: 1;
             width: 100%;
@@ -86,12 +83,15 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            overflow: auto;
+            position: relative;
         }
-        /* রসিদ যেন পুরো স্ক্রিন জুড়ে ১০০% জায়গা নেয় */
-        embed, iframe {
+        /* রসিদটি যেন পুরো স্ক্রিন জুড়ে একদম বড় এবং ক্লিয়ার দেখায় */
+        .full-receipt {
             width: 100%;
             height: 100%;
-            border: none;
+            object-fit: contain;
+            display: block;
         }
         .error-box {
             padding: 40px;
@@ -122,20 +122,19 @@
     </div>
 
     <div class="viewer-container" id="container">
-        <!-- PDF load -->
+        <!-- রসিদ লোড হবে -->
     </div>
 
     <script>
-        // বাংলা তারিখ
+        // বাংলা তারিখ জেনারেটর
         const days = ['রবিবার', 'সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার', 'শুক্রবার', 'শনিবার'];
         const months = ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'];
         const now = new Date();
         const bDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
         function toBn(n) { return n.toString().split('').map(d => bDigits[d] !== undefined ? bDigits[d] : d).join(''); }
-        
         document.getElementById('current-date-banner').innerText = `${days[now.getDay()]}, ${toBn(now.getDate())} ${months[now.getMonth()]}, ${toBn(now.getFullYear())}`;
 
-        // লিংক থেকে আইডি বের করা
+        // লিংক থেকে ফাইল আইডি নেওয়া
         const urlParams = new URLSearchParams(window.location.search);
         const fileUrl = urlParams.get('file');
         const container = document.getElementById('container');
@@ -149,17 +148,17 @@
                 fileId = new URLSearchParams(fileUrl.split('?')[1]).get('id');
             }
 
-            // ড্রাইভের ডাইরেক্ট পিডিএফ ভিউ লিংক যা কোনো মার্জিন ছাড়া ফুল স্ক্রিন দেখাবে
-            const directPdfUrl = `https://drive.google.com/viewerng/viewer?embedded=true&url=https://drive.google.com/uc?export=download&id=${fileId}`;
-            
-            container.innerHTML = `<iframe src="${directPdfUrl}"></iframe>`;
+            // এখানে iframe বাদ দিয়ে সরাসরি অবজেক্ট ট্যাগ ব্যবহার করা হয়েছে যা পুরো স্ক্রিন জুড়ে রেন্ডার করবে
+            container.innerHTML = `<object class="full-receipt" data="https://drive.google.com/uc?export=view&id=${fileId}" type="application/pdf">
+                <embed class="full-receipt" src="https://drive.google.com/uc?export=view&id=${fileId}" type="application/pdf" />
+            </object>`;
         } else {
             container.innerHTML = `<div class="error-box">⚠️ কোনো রসিদ পাওয়া যায়নি! সঠিক লিংক ব্যবহার করুন।</div>`;
         }
 
         function printPdf() {
             if (fileId) {
-                const pWindow = window.open(`https://drive.google.com/uc?export=download&id=${fileId}`, '_blank');
+                window.open(`https://drive.google.com/uc?export=download&id=${fileId}`, '_blank');
             } else {
                 alert('রসিদ পাওয়া যায়নি!');
             }
