@@ -1,313 +1,350 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ভূমি উন্নয়ন কর - রসিদ যাচাই</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    body {
-      font-family: 'SolaimanLipi', Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f4f7f6;
-      color: #333;
-    }
+<title>দাখিলা যাচাই</title>
 
-    header {
-      background-color: #006a4e;
-      color: white;
-      padding: 15px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+<style>
+*{
+  box-sizing:border-box;
+}
 
-    .logo-area {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+html,body{
+  margin:0;
+  padding:0;
+  width:100%;
+  height:100%;
+  background:#eef2f1;
+  font-family:"Noto Sans Bengali",Arial,sans-serif;
+}
 
-    .logo-area span {
-      font-size: 20px;
-      font-weight: bold;
-    }
+body{
+  display:flex;
+  justify-content:center;
+}
 
-    .container {
-      max-width: 900px;
-      margin: 20px auto;
-      padding: 0 15px;
-    }
+.frame{
+  width:100%;
+  max-width:520px;
+  height:100vh;
+  background:#fff;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  border-left:3px dotted #16834a;
+  border-right:3px dotted #16834a;
+}
 
-    .action-buttons {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      margin-bottom: 20px;
-    }
+/* তারিখ */
+.date{
+  flex-shrink:0;
+  background:#087b55;
+  color:#fff;
+  text-align:center;
+  font-size:18px;
+  font-weight:bold;
+  padding:12px 5px;
+}
 
-    .btn {
-      padding: 10px 20px;
-      font-size: 16px;
-      font-weight: bold;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      color: white;
-    }
+/* প্রিন্ট */
+.print-box{
+  flex-shrink:0;
+  background:#f5f5f5;
+  text-align:center;
+  padding:8px;
+}
 
-    .btn-print {
-      background-color: #2b70fa;
-    }
+.print-btn{
+  background:#087bd1;
+  color:white;
+  border:0;
+  border-radius:6px;
+  padding:10px 30px;
+  font-size:17px;
+  font-weight:bold;
+  cursor:pointer;
+}
 
-    #receipt {
-      background: white;
-      padding: 5px;
-      border-radius: 8px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      min-height: 500px;
-      text-align: center;
-    }
+/* PDF / ছবি */
+.viewer{
+  flex:1;
+  min-height:0;
+  overflow:auto;
+  background:#e9eeee;
+  padding:8px;
+  text-align:center;
+}
 
-    #receiptImage {
-      width: 100%;
-      height: auto;
-      display: block;
-      border: none;
-      border-radius: 3px;
-    }
+.viewer img{
+  display:block;
+  width:100%;
+  height:auto;
+  margin:auto;
+}
 
-    .error-msg {
-      color: #d9534f;
-      font-size: 18px;
-      text-align: center;
-      padding: 40px;
-    }
+.viewer iframe{
+  display:block;
+  width:100%;
+  height:100%;
+  min-height:100%;
+  border:0;
+  background:#fff;
+}
 
-    @media (max-width: 600px) {
-      header {
-        padding: 15px;
-      }
+.loading{
+  padding-top:80px;
+  color:#555;
+  font-size:18px;
+}
 
-      .logo-area span {
-        font-size: 17px;
-      }
+.error{
+  padding:60px 20px;
+  color:#d33;
+  font-size:20px;
+  font-weight:bold;
+}
 
-      .container {
-        margin: 20px auto;
-        padding: 0 10px;
-      }
+/* নিচের ডিজাইন */
+.bottom{
+  flex-shrink:0;
+  height:32px;
+  background:linear-gradient(
+    90deg,
+    #087b55,
+    #43b66c,
+    #087b55
+  );
+}
 
-      .btn {
-        font-size: 15px;
-        padding: 10px 18px;
-      }
-    }
-  </style>
+/* প্রিন্টের সময় */
+@media print{
+
+  body{
+    background:white;
+  }
+
+  .frame{
+    max-width:none;
+    height:auto;
+    border:0;
+  }
+
+  .date,
+  .print-box,
+  .bottom{
+    display:none;
+  }
+
+  .viewer{
+    overflow:visible;
+    padding:0;
+    background:white;
+  }
+
+  .viewer img{
+    width:100%;
+  }
+
+  .viewer iframe{
+    display:none;
+  }
+}
+</style>
 </head>
 
 <body>
 
-  <header>
-    <div class="logo-area">
-      <div style="background:#f4b400; padding:5px 12px; border-radius:4px; font-weight:bold; color:black;">
-        ৳
-      </div>
+<div class="frame">
 
-      <span>ভূমি উন্নয়ন কর</span>
-    </div>
+  <div class="date" id="date"></div>
 
-    <div id="live-date" style="font-size:14px;"></div>
-  </header>
-
-
-  <div class="container">
-
-    <div class="action-buttons">
-      <button id="printBtn" onclick="printReceipt()" class="btn btn-print">
-        🖨️ প্রিন্ট
-      </button>
-    </div>
-
-    <div id="receipt">
-      <!-- JPG রসিদ এখানে দেখা যাবে -->
-    </div>
-
+  <div class="print-box">
+    <button class="print-btn" onclick="printFile()">
+      🖨 প্রিন্ট
+    </button>
   </div>
 
+  <div class="viewer" id="viewer">
+    <div class="loading">ফাইল লোড হচ্ছে...</div>
+  </div>
 
-  <script>
+  <div class="bottom"></div>
 
-    /* =========================
-       তারিখ দেখানো
-    ========================= */
-
-    function updateDateOnly() {
-
-      const now = new Date();
-
-      const options = {
-        weekday: 'long',
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric'
-      };
-
-      document.getElementById('live-date').innerText =
-        now.toLocaleDateString('bn-BD', options);
-    }
-
-    updateDateOnly();
+</div>
 
 
-    /* =========================
-       URL থেকে file নেওয়া
-       
-       উদাহরণ:
-       ?file=dakhila-3.jpg
-    ========================= */
+<script>
 
-    const urlParams =
-      new URLSearchParams(window.location.search);
+/* =========================
+   বাংলা তারিখ/দিন
+========================= */
 
-    const requestedFile =
-      urlParams.get('file');
+function showDate(){
 
-    const receiptBox =
-      document.getElementById('receipt');
+  const now = new Date();
 
-    const printBtn =
-      document.getElementById('printBtn');
+  const days = [
+    "রবিবার",
+    "সোমবার",
+    "মঙ্গলবার",
+    "বুধবার",
+    "বৃহস্পতিবার",
+    "শুক্রবার",
+    "শনিবার"
+  ];
 
+  const day = days[now.getDay()];
 
-    /* =========================
-       রসিদ দেখানোর কাজ
-    ========================= */
+  const date = String(now.getDate()).padStart(2,"0");
 
-    if (requestedFile) {
+  const month = String(now.getMonth()+1).padStart(2,"0");
 
-      const imageUrl =
-        'https://pottoyon-verify.github.io/ldtex-qov-pq/receipts/' +
-        encodeURIComponent(requestedFile);
+  const year = now.getFullYear();
 
-
-      receiptBox.innerHTML = `
-        <img
-          id="receiptImage"
-          src="${imageUrl}"
-          alt="ভূমি উন্নয়ন কর রসিদ"
-          onerror="showReceiptError()"
-        >
-      `;
+  document.getElementById("date").innerText =
+    `${date}-${month}-${year} | ${day}`;
+}
 
 
-      /* =========================
-         Print Button
-      ========================= */
+/* =========================
+   QR লিংক থেকে ফাইল নেওয়া
+   উদাহরণ:
 
-      window.printReceipt = function () {
+   ?file=101.pdf
 
-        const printWindow =
-          window.open('', '_blank');
+   ?file=102.pdf
+========================= */
 
-        if (!printWindow) {
+function loadFile(){
 
-          alert(
-            'প্রিন্ট করার জন্য ব্রাউজারের pop-up অনুমতি দিন।'
-          );
+  const params =
+    new URLSearchParams(window.location.search);
 
-          return;
-        }
+  const file = params.get("file");
 
+  const viewer =
+    document.getElementById("viewer");
 
-        printWindow.document.write(`
+  if(!file){
 
-          <!DOCTYPE html>
+    viewer.innerHTML = `
+      <div class="error">
+        ⚠️ কোনো রসিদ পাওয়া যায়নি
+        <br><br>
+        সঠিক QR কোড ব্যবহার করুন।
+      </div>
+    `;
 
-          <html lang="bn">
-
-          <head>
-
-            <meta charset="UTF-8">
-
-            <title>
-              ভূমি উন্নয়ন কর রসিদ
-            </title>
-
-            <style>
-
-              @page {
-                margin: 0;
-              }
-
-              html,
-              body {
-                margin: 0;
-                padding: 0;
-                background: white;
-              }
-
-              img {
-                width: 100%;
-                height: auto;
-                display: block;
-              }
-
-            </style>
-
-          </head>
-
-          <body>
-
-            <img
-              src="${imageUrl}"
-              onload="window.print();"
-            >
-
-          </body>
-
-          </html>
-
-        `);
+    return;
+  }
 
 
-        printWindow.document.close();
-      };
+  /* নিরাপত্তার জন্য path বাদ দেওয়া */
+  const cleanFile =
+    file.split("/").pop();
 
 
-    } else {
-
-      showReceiptError();
-
-    }
+  const fileUrl =
+    "receipts/" +
+    encodeURIComponent(cleanFile);
 
 
-    /* =========================
-       Error
-    ========================= */
+  /* ফাইলের ধরন */
 
-    function showReceiptError() {
+  const extension =
+    cleanFile
+      .split(".")
+      .pop()
+      .toLowerCase();
 
-      receiptBox.innerHTML = `
 
-        <div class="error-msg">
+  /* ছবি */
 
-          ⚠️ দুঃখিত, কোনো রসিদ পাওয়া যায়নি।
-          সঠিক লিংক ব্যবহার করুন।
+  if(
+    extension === "jpg" ||
+    extension === "jpeg" ||
+    extension === "png" ||
+    extension === "webp" ||
+    extension === "gif"
+  ){
 
+    viewer.innerHTML = "";
+
+    const img =
+      document.createElement("img");
+
+    img.src = fileUrl;
+
+    img.alt = "রসিদ";
+
+    img.onload = function(){
+      viewer.scrollTop = 0;
+    };
+
+    img.onerror = function(){
+
+      viewer.innerHTML = `
+        <div class="error">
+          ⚠️ রসিদ পাওয়া যায়নি
         </div>
-
       `;
+    };
 
-      printBtn.style.display = 'none';
-    }
+    viewer.appendChild(img);
 
-  </script>
+  }
+
+
+  /* PDF */
+
+  else if(extension === "pdf"){
+
+    viewer.innerHTML = "";
+
+    const iframe =
+      document.createElement("iframe");
+
+    iframe.src = fileUrl;
+
+    iframe.title = "PDF রসিদ";
+
+    viewer.appendChild(iframe);
+
+  }
+
+
+  /* অন্য ফাইল */
+
+  else{
+
+    viewer.innerHTML = `
+      <div class="error">
+        ⚠️ এই ফাইলটি সমর্থিত নয়
+      </div>
+    `;
+  }
+}
+
+
+/* =========================
+   Print
+========================= */
+
+function printFile(){
+
+  window.print();
+
+}
+
+
+/* চালু */
+
+showDate();
+loadFile();
+
+</script>
 
 </body>
 </html>
