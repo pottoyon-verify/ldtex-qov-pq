@@ -1,81 +1,76 @@
-<"DOCTYPE html>
+<DOCTYPE html>
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <title>ভূমি উন্নয়ন কর` - দাখিলা রসিদ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ভূমি উন্নয়ন কর - দাখিলা রসিদ</title>
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
-        body {
-            font-family: 'SolaimanLipi', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f6f9;
-            color: #333;
+        body, html {
+            width: 100%;
+            height: 100%;
+            font-family: 'SolaimanLipi', Arial, sans-serif;
+            background-color: #222;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
-            overflow-x: hidden;
+            overflow: hidden;
         }
         .top-bar {
             background-color: #1b5e20;
             color: white;
             text-align: center;
-            padding: 8px 10px;
-            font-size: 14px;
-            font-weight: 500;
+            padding: 5px;
+            font-size: 13px;
         }
         header {
             background-color: #ffffff;
-            border-bottom: 1px solid #e0e0e0;
-            padding: 10px 15px;
+            padding: 8px 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border-bottom: 1px solid #ddd;
         }
         .logo-area {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
         .logo-icon {
             background-color: #f9a825;
             color: white;
-            width: 36px;
-            height: 36px;
+            width: 32px;
+            height: 32px;
             display: flex;
             justify-content: center;
             align-items: center;
             font-weight: bold;
-            font-size: 20px;
             border-radius: 4px;
         }
         .brand-title {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: bold;
-            color: #111;
         }
         .action-bar {
-            background-color: #f8f9fa;
-            padding: 10px;
+            background-color: #f1f3f4;
+            padding: 8px;
             text-align: center;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid #ccc;
             display: flex;
             justify-content: center;
-            gap: 10px;
+            gap: 12px;
         }
         .btn {
             border: none;
-            padding: 8px 18px;
+            padding: 6px 16px;
             border-radius: 4px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: bold;
             cursor: pointer;
             color: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         .print-btn {
             background-color: #1976d2;
@@ -86,26 +81,28 @@
         .viewer-container {
             flex: 1;
             width: 100%;
-            background: #e9ecef;
+            height: 100%;
+            background: #525659;
             display: flex;
             justify-content: center;
             align-items: center;
-            position: relative;
-            overflow: hidden;
-            min-height: 75vh;
         }
-        .receipt-frame {
+        /* রসিদটি যেন পুরো স্ক্রিন জুড়ে একদম বড় এবং ক্লিয়ার দেখায় */
+        iframe {
             width: 100%;
-            height: 75vh;
+            height: 100%;
             border: none;
-            background: #fff;
+            display: block;
         }
         .error-box {
-            padding: 40px 20px;
+            padding: 40px;
             text-align: center;
-            color: #d32f2f;
+            color: #ff5252;
             font-size: 16px;
             font-weight: bold;
+            background: white;
+            width: 100%;
+            height: 100%;
         }
     </style>
 </head>
@@ -121,37 +118,25 @@
     </header>
 
     <div class="action-bar">
-        <button class="btn print-btn" onclick="printReceipt()">🖨️ প্রিন্ট</button>
-        <button class="btn download-btn" onclick="downloadReceipt()">📥 ডাউনলোড</button>
+        <button class="btn print-btn" onclick="printPdf()">🖨️ প্রিন্ট</button>
+        <button class="btn download-btn" onclick="downloadPdf()">📥 ডাউনলোড</button>
     </div>
 
     <div class="viewer-container" id="container">
-        <!-- Viewer load -->
+        <!-- PDF load -->
     </div>
 
     <script>
-        // তারিখ ও বাংলা রূপান্তর
-        function updateDateTime() {
-            const days = ['রবিবার', 'সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার', 'শুক্রবার', 'শনিবার'];
-            const months = ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'];
-            
-            const now = new Date();
-            const dayName = days[now.getDay()];
-            const dayNum = convertToBengaliNumber(now.getDate());
-            const monthName = months[now.getMonth()];
-            const yearNum = convertToBengaliNumber(now.getFullYear());
+        // বাংলা তারিখ জেনারেটর
+        const days = ['রবিবার', 'সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার', 'শুক্রবার', 'শনিবার'];
+        const months = ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'];
+        const now = new Date();
+        const bDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+        function toBn(n) { return n.toString().split('').map(d => bDigits[d] !== undefined ? bDigits[d] : d).join(''); }
+        
+        document.getElementById('current-date-banner').innerText = `${days[now.getDay()]}, ${toBn(now.getDate())} ${months[now.getMonth()]}, ${toBn(now.getFullYear())}`;
 
-            document.getElementById('current-date-banner').innerText = `${dayName}, ${dayNum} ${monthName}, ${yearNum}`;
-        }
-
-        function convertToBengaliNumber(num) {
-            const bengaliDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
-            return num.toString().split('').map(d => bengaliDigits[d] !== undefined ? bengaliDigits[d] : d).join('');
-        }
-
-        updateDateTime();
-
-        // ইউআরএল থেকে ফাইল আইডি বা লিংক নেওয়া
+        // লিংক থেকে ফাইল আইডি নেওয়া
         const urlParams = new URLSearchParams(window.location.search);
         const fileUrl = urlParams.get('file');
         const container = document.getElementById('container');
@@ -165,18 +150,14 @@
                 fileId = new URLSearchParams(fileUrl.split('?')[1]).get('id');
             }
 
-            // গুগল ড্রাইভের সঠিক এমবেড লিংক যা সাদা স্ক্রিন সমস্যার সমাধান করবে
-            const viewSrc = `https://docs.google.com/gview?url=https://drive.google.com/uc?export=download&id=${fileId}&embedded=true`;
-            
-            // বিকল্প হিসেবে সরাসরি ড্রাইভ প্রিভিউ লিংক ব্যবহারের জন্য
-            const directPreview = `https://drive.google.com/file/d/${fileId}/preview`;
-
-            container.innerHTML = `<iframe class="receipt-frame" src="${directPreview}"></iframe>`;
+            // রসিদটিকে একদম ফুল স্ক্রিন ও ক্লিয়ার দেখানোর জন্য ড্রাইভের வியూ লিংক
+            const fullScreenUrl = `https://drive.google.com/file/d/${fileId}/preview?usp=drivesdk`;
+            container.innerHTML = `<iframe src="${fullScreenUrl}"></iframe>`;
         } else {
-            container.innerHTML = `<div class="error-box">⚠️ দুঃখিত, সঠিক রসিদটি পাওয়া যায়নি!</div>`;
+            container.innerHTML = `<div class="error-box">⚠️ কোনো রসিদ পাওয়া যায়নি! সঠিক লিংক ব্যবহার করুন।</div>`;
         }
 
-        function printReceipt() {
+        function printPdf() {
             if (fileId) {
                 window.open(`https://drive.google.com/file/d/${fileId}/view`, '_blank');
             } else {
@@ -184,11 +165,11 @@
             }
         }
 
-        function downloadReceipt() {
+        function downloadPdf() {
             if (fileId) {
                 window.location.href = `https://drive.google.com/uc?export=download&id=${fileId}`;
             } else {
-                alert('ডাউনলোড লিংক পাওয়া যায়নি!');
+                alert('ডাউনলোড ফাইল পাওয়া যায়নি!');
             }
         }
     </script>
