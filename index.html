@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>ভূমি উন্নয়ন কর - ldtax.gov.bd</title>
+  <title>ভূমি উন্নয়ন কর - ldtax.gov.bd</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'SolaimanLipi', Arial, sans-serif; }
     body { background-color: #f4fbf7; min-height: 100vh; display: flex; flex-direction: column; }
@@ -110,7 +110,7 @@
     <div class="navbar">
       <div class="brand-section">
         <div class="logo-box">৳</div>
-        <div class="brand-title">ভূমি উন্নয়ন কর</div>
+        <div class="brand-title">ভূমি উন্নয়ন কর</div>
       </div>
       <div class="nav-controls">
         <div class="lang-toggle">
@@ -143,19 +143,17 @@
     }
     updateDateOnly();
 
-    // সরাসরি গিটহাব ফোল্ডার থেকে ফাইল লোড করার ফাইনাল স্ক্রিপ্ট
     const urlParams = new URLSearchParams(window.location.search);
     let requestedFile = urlParams.get('file');
     const receiptBox = document.getElementById('receipt');
     const downloadBtn = document.getElementById('downloadBtn');
 
     if (requestedFile) {
-      // গিটহাবের ভেতরে receipts ফোল্ডার থেকে ফাইল টানবে
       const fileUrl = `receipts/${requestedFile}`;
-      receiptBox.innerHTML = `<object data="${fileUrl}" type="application/pdf" class="doc-viewer"><iframe src="${fileUrl}" class="doc-viewer"></iframe></object>`;
+      receiptBox.innerHTML = `<iframe src="${fileUrl}" class="doc-viewer"></iframe>`;
       downloadBtn.href = fileUrl;
     } else {
-      receiptBox.innerHTML = `<div class="error-msg">⚠️ দুঃখিত, কোনো রসিদ পাওয়া যায়নি। সঠিক লিংক ব্যবহার করুন।</div>`;
+      receiptBox.innerHTML = `<div class="error-msg">⚠️ দুঃখিত, কোনো রসিদ পাওয়া যায়নি। সঠিক লিংক ব্যবহার করুন।</div>`;
       downloadBtn.style.display = 'none';
     }
   </script>
