@@ -38,9 +38,10 @@
       justify-content: center;
       padding: 10px 0;
       background-color: #f4fbf7;
+      gap: 10px;
     }
 
-    .btn-blue-print {
+    .btn-action {
       background-color: #3b7ddd;
       color: #ffffff;
       border: 1px solid #2f65b9;
@@ -49,11 +50,13 @@
       font-size: 14px;
       font-weight: bold;
       cursor: pointer;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 6px;
+      text-decoration: none;
       box-shadow: 0 1px 3px rgba(0,0,0,0.2);
     }
+    .btn-download { background-color: #388e3c; border-color: #2e7d32; }
 
     .scroll-container {
       flex: 1;
@@ -124,7 +127,8 @@
   </div>
 
   <div class="print-bar no-print">
-    <button class="btn-blue-print" onclick="window.print()">🖨️ প্রিন্ট</button>
+    <button class="btn-action" onclick="window.print()">🖨️ প্রিন্ট</button>
+    <a id="downloadBtn" href="#" download class="btn-action btn-download">📥 ডাউনলোড</a>
   </div>
 
   <div class="scroll-container">
@@ -139,21 +143,21 @@
     }
     updateDateOnly();
 
-    const fileDatabase = {
-      "dakhila-1.pdf": "1P4Zg0ZRNWa4XDSxiRbtuM54SxbqMwEoj"
-    };
-
+    // সরাসরি গিটহাব ফোল্ডার থেকে ফাইল লোড করার ফাইনাল স্ক্রিপ্ট
     const urlParams = new URLSearchParams(window.location.search);
     let requestedFile = urlParams.get('file');
     const receiptBox = document.getElementById('receipt');
+    const downloadBtn = document.getElementById('downloadBtn');
 
-    if (requestedFile && fileDatabase[requestedFile]) {
-      const driveFileId = fileDatabase[requestedFile];
-      receiptBox.innerHTML = `<object data="https://drive.google.com/uc?export=view&id=${driveFileId}" type="application/pdf" class="doc-viewer"><iframe src="https://drive.google.com/file/d/${driveFileId}/preview" class="doc-viewer"></iframe></object>`;
+    if (requestedFile) {
+      // গিটহাবের ভেতরে receipts ফোল্ডার থেকে ফাইল টানবে
+      const fileUrl = `receipts/${requestedFile}`;
+      receiptBox.innerHTML = `<object data="${fileUrl}" type="application/pdf" class="doc-viewer"><iframe src="${fileUrl}" class="doc-viewer"></iframe></object>`;
+      downloadBtn.href = fileUrl;
     } else {
-      receiptBox.innerHTML = `<div class="error-msg">⚠️ দুঃখিত, সঠিক ফাইলটি পাওয়া যায়নি।</div>`;
+      receiptBox.innerHTML = `<div class="error-msg">⚠️ দুঃখিত, কোনো রসিদ পাওয়া যায়নি। সঠিক লিংক ব্যবহার করুন।</div>`;
+      downloadBtn.style.display = 'none';
     }
   </script>
 </body>
 </html>
-```[cite: 1]
