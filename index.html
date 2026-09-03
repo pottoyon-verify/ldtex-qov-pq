@@ -1,72 +1,164 @@
 <!DOCTYPE html>
 <html lang="bn">
-  <head>
-    <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-        <title>ভূমি উন্নয়ন কর - দাখিলা যাচাই</title>
-        <style>
-*{box-sizing:border-box}
-html,body{margin:0;padding:0;width:100%;height:100%;background:#eef3f1;font-family:"Noto Sans Bengali",Arial,sans-serif}
-body{display:flex;justify-content:center;overflow:hidden}
-.frame{width:100%;max-width:830px;height:100vh;background:#fff;display:flex;flex-direction:column;overflow:hidden;border-left:4px dotted #16834a;border-right:4px dotted #16834a}
-.date{flex-shrink:0;min-height:98px;display:flex;align-items:center;justify-content:center;background:#087f58;color:#fff;text-align:center;font-size:28px;font-weight:bold;padding:10px}
-.print-box{flex-shrink:0;height:120px;background:#f5f5f5;display:flex;align-items:center;justify-content:center}
-.print-btn{background:#087bd1;color:#fff;border:0;border-radius:12px;padding:16px 55px;font-size:28px;font-weight:bold;cursor:pointer;box-shadow:0 2px 4px rgba(0,0,0,.2)}
-.viewer{flex:1;min-height:0;overflow:auto;background:#f5fbe8;padding:10px 18px;text-align:center;-webkit-overflow-scrolling:touch}
-.viewer img{display:block;width:100%;height:auto;max-width:none;margin:0 auto}
-.loading{padding-top:80px;color:#555;font-size:22px}
-.error{padding:70px 20px;color:#c62828;font-size:24px;font-weight:bold}
-.bottom{flex-shrink:0;height:58px;background:linear-gradient(90deg,#fff 0%,#73b78d 25%,#087b55 50%,#73b78d 75%,#fff 100%)}
-@media(max-width:600px){.date{min-height:98px;font-size:25px}.print-box{height:120px}.print-btn{font-size:26px;padding:15px 48px}.viewer{padding:8px 16px}.bottom{height:58px}}
-@media print{
-html,body{width:auto;height:auto;overflow:visible;background:#fff}
-.frame{width:100%;height:auto;max-width:none;border:0;overflow:visible}
-.date,.print-box,.bottom{display:none}
-.viewer{display:block;width:100%;height:auto;overflow:visible;padding:0;background:#fff}
-.viewer img{display:block;width:100%;height:auto}
-}
-</style>
-      </head>
-      <body>
-        <div class="frame">
-          <div class="date" id="date">
-          </div>
-          <div class="print-box">
-            <button class="print-btn" onclick="printImage()">🖨️ প্রিন্ট</button>
-          </div>
-          <div class="viewer" id="viewer">
-            <div class="loading">রসিদ লোড হচ্ছে...</div>
-          </div>
-          <div class="bottom">
-          </div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>ভূমি উন্নয়ন কর - ldtax.gov.bd</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'SolaimanLipi', Arial, sans-serif; }
+    body { background-color: #f4fbf7; min-height: 100vh; display: flex; flex-direction: column; }
+
+    .top-sticky-header {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      background: #ffffff;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+    
+    .top-banner { background-color: #006a4e; color: #ffffff; text-align: center; padding: 6px 10px; font-size: 13px; font-weight: bold; }
+    
+    .navbar { background-color: #ffffff; display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-bottom: 1px solid #e0e0e0; }
+    .brand-section { display: flex; align-items: center; gap: 8px; }
+    .logo-box { background-color: #e6a100; color: #ffffff; width: 36px; height: 36px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; }
+    .brand-title { font-size: 18px; font-weight: bold; color: #222222; }
+    .nav-controls { display: flex; align-items: center; gap: 6px; }
+    .lang-toggle { border: 1px solid #006a4e; border-radius: 4px; overflow: hidden; display: flex; }
+    .lang-btn { padding: 3px 7px; font-size: 12px; font-weight: bold; }
+    .lang-btn.bn { background-color: #006a4e; color: #ffffff; }
+    .lang-btn.en { background-color: #ffffff; color: #006a4e; }
+    .login-btn { background-color: #006a4e; color: #ffffff; border: none; padding: 5px 10px; font-size: 12px; font-weight: bold; border-radius: 12px; display: flex; align-items: center; gap: 3px; }
+
+    .menu-bar { background-color: #ffffff; padding: 8px 12px; border-bottom: 1px solid #e0e0e0; }
+    .hamburger-icon { width: 20px; height: 14px; display: flex; flex-direction: column; justify-content: space-between; }
+    .hamburger-icon span { display: block; height: 2px; background-color: #006a4e; border-radius: 1px; }
+
+    .print-bar {
+      display: flex;
+      justify-content: center;
+      padding: 10px 0;
+      background-color: #f4fbf7;
+      gap: 10px;
+    }
+
+    .btn-action {
+      background-color: #3b7ddd;
+      color: #ffffff;
+      border: 1px solid #2f65b9;
+      padding: 6px 18px;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    .btn-download { background-color: #388e3c; border-color: #2e7d32; }
+
+    .scroll-container {
+      flex: 1;
+      width: 100%;
+      overflow-x: auto;
+      overflow-y: auto;
+      background-color: #f4fbf7;
+      padding: 0 10px 20px 10px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .receipt-paper {
+      width: 780px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 10px;
+      border: 1px dashed #7eb382;
+      border-radius: 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* জেপিজি ছবি ফুল-পেজে দেখানোর জন্য স্টাইল */
+    .receipt-img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 4px;
+    }
+
+    .error-msg {
+      color: #d32f2f;
+      padding: 30px;
+      font-weight: bold;
+      text-align: center;
+      font-size: 16px;
+    }
+
+    @media print {
+      .top-sticky-header, .print-bar, .no-print { display: none !important; }
+      body { background: #fff; }
+      .scroll-container { overflow: visible; padding: 0; background: #fff; }
+      .receipt-paper { width: 100%; border: none; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-sticky-header">
+    <div class="top-banner" id="live-date"></div>
+
+    <div class="navbar">
+      <div class="brand-section">
+        <div class="logo-box">৳</div>
+        <div class="brand-title">ভূমি উন্নয়ন কর</div>
+      </div>
+      <div class="nav-controls">
+        <div class="lang-toggle">
+          <span class="lang-btn bn">বাং</span>
+          <span class="lang-btn en">EN</span>
         </div>
-        <script>
-function showDate(){
- const now=new Date();
- const days=["রবিবার","সোমবার","মঙ্গলবার","বুধবার","বৃহস্পতিবার","শুক্রবার","শনিবার"];
- const date=String(now.getDate()).padStart(2,"0");
- const month=String(now.getMonth()+1).padStart(2,"0");
- document.getElementById("date").innerText=`${date}-${month}-${now.getFullYear()} | ${days[now.getDay()]}`;
-}
-function loadImage(){
- const file=new URLSearchParams(window.location.search).get("file");
- const viewer=document.getElementById("viewer");
- if(!file){viewer.innerHTML='<div class="error">⚠️ কোনো রসিদ পাওয়া যায়নি<br><br>সঠিক QR কোড ব্যবহার করুন।</div>';return}
- const cleanFile=file.split("/").pop();
- const ext=cleanFile.split(".").pop().toLowerCase();
- if(!["jpg","jpeg","png","webp"].includes(ext)){
-  viewer.innerHTML='<div class="error">⚠️ শুধু JPG / JPEG / PNG / WEBP রসিদ ব্যবহার করুন।</div>';return;
- }
- const img=document.createElement("img");
- img.src="receipts/"+encodeURIComponent(cleanFile);
- img.alt="দাখিলা রসিদ";
- img.onerror=()=>{viewer.innerHTML=`<div class="error">⚠️ রসিদ পাওয়া যায়নি<br><br><small>${cleanFile}</small></div>`};
- viewer.innerHTML="";
- viewer.appendChild(img);
-}
-function printImage(){window.print()}
-showDate();
-loadImage();
-</script>
-      </body>
-    </html>
+        <button class="login-btn">লগইন <span>▼</span></button>
+      </div>
+    </div>
+
+    <div class="menu-bar">
+      <div class="hamburger-icon"><span></span><span></span><span></span></div>
+    </div>
+  </div>
+
+  <div class="print-bar no-print">
+    <button class="btn-action" onclick="window.print()">🖨️ প্রিন্ট</button>
+    <a id="downloadBtn" href="#" download class="btn-action btn-download">📥 ডাউনলোড</a>
+  </div>
+
+  <div class="scroll-container">
+    <div class="receipt-paper" id="receipt"></div>
+  </div>
+
+  <script>
+    function updateDateOnly() {
+      const now = new Date();
+      const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+      document.getElementById('live-date').innerText = now.toLocaleDateString('bn-BD', options);
+    }
+    updateDateOnly();
+
+    const urlParams = new URLSearchParams(window.location.search);
+    let requestedFile = urlParams.get('file');
+    const receiptBox = document.getElementById('receipt');
+    const downloadBtn = document.getElementById('downloadBtn');
+
+    if (requestedFile) {
+      const fileUrl = `receipts/${requestedFile}`;
+      // পিডিএফের পরিবর্তে এখন সরাসরি <img> ট্যাগের মাধ্যমে জেপিজি ছবি লোড করা হবে
+      receiptBox.innerHTML = `<img src="${fileUrl}" alt="রসিদ ছবি" class="receipt-img">`;
+      downloadBtn.href = fileUrl;
+    } else {
+      receiptBox.innerHTML = `<div class="error-msg">⚠️ দুঃখিত, কোনো রসিদ পাওয়া যায়নি। সঠিক লিংক ব্যবহার করুন।</div>`;
+      downloadBtn.style.display = 'none';
+    }
+  </script>
+</body>
+</html>
