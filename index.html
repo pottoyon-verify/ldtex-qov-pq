@@ -38,14 +38,13 @@
       justify-content: center;
       padding: 10px 0;
       background-color: #f4fbf7;
-      gap: 10px;
     }
 
     .btn-action {
       background-color: #3b7ddd;
       color: #ffffff;
       border: 1px solid #2f65b9;
-      padding: 6px 18px;
+      padding: 6px 22px;
       border-radius: 4px;
       font-size: 14px;
       font-weight: bold;
@@ -56,7 +55,6 @@
       text-decoration: none;
       box-shadow: 0 1px 3px rgba(0,0,0,0.2);
     }
-    .btn-download { background-color: #388e3c; border-color: #2e7d32; }
 
     .scroll-container {
       flex: 1;
@@ -80,7 +78,6 @@
       align-items: center;
     }
 
-    /* জেপিজি ছবি ফুল-পেজে দেখানোর জন্য স্টাইল */
     .receipt-img {
       width: 100%;
       height: auto;
@@ -130,7 +127,6 @@
 
   <div class="print-bar no-print">
     <button class="btn-action" onclick="window.print()">🖨️ প্রিন্ট</button>
-    <a id="downloadBtn" href="#" download class="btn-action btn-download">📥 ডাউনলোড</a>
   </div>
 
   <div class="scroll-container">
@@ -148,16 +144,12 @@
     const urlParams = new URLSearchParams(window.location.search);
     let requestedFile = urlParams.get('file');
     const receiptBox = document.getElementById('receipt');
-    const downloadBtn = document.getElementById('downloadBtn');
 
     if (requestedFile) {
       const fileUrl = `receipts/${requestedFile}`;
-      // পিডিএফের পরিবর্তে এখন সরাসরি <img> ট্যাগের মাধ্যমে জেপিজি ছবি লোড করা হবে
       receiptBox.innerHTML = `<img src="${fileUrl}" alt="রসিদ ছবি" class="receipt-img">`;
-      downloadBtn.href = fileUrl;
     } else {
       receiptBox.innerHTML = `<div class="error-msg">⚠️ দুঃখিত, কোনো রসিদ পাওয়া যায়নি। সঠিক লিংক ব্যবহার করুন।</div>`;
-      downloadBtn.style.display = 'none';
     }
   </script>
 </body>
