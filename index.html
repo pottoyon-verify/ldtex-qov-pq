@@ -3,21 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>ভূমি উন্নয়ন কর - ldtax.gov.bd</title>
+  <title>ভূমি উন্নয়ন কর - রসিদ যাচাই</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'SolaimanLipi', Arial, sans-serif; }
-    body { background-color: #f4fbf7; min-height: 100vh; display: flex; flex-direction: column; }
+    body { background-color: #ffffff; min-height: 100vh; overflow-x: hidden; }
 
-    .top-sticky-header {
-      position: sticky;
-      top: 0;
-      z-index: 999;
-      background: #ffffff;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-    }
-    
+    /* Green Top Header */
     .top-banner { background-color: #006a4e; color: #ffffff; text-align: center; padding: 6px 10px; font-size: 13px; font-weight: bold; }
     
+    /* Navbar Area */
     .navbar { background-color: #ffffff; display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-bottom: 1px solid #e0e0e0; }
     .brand-section { display: flex; align-items: center; gap: 8px; }
     .logo-box { background-color: #e6a100; color: #ffffff; width: 36px; height: 36px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; }
@@ -29,55 +24,48 @@
     .lang-btn.en { background-color: #ffffff; color: #006a4e; }
     .login-btn { background-color: #006a4e; color: #ffffff; border: none; padding: 5px 10px; font-size: 12px; font-weight: bold; border-radius: 12px; display: flex; align-items: center; gap: 3px; }
 
+    /* Hamburger Line */
     .menu-bar { background-color: #ffffff; padding: 8px 12px; border-bottom: 1px solid #e0e0e0; }
     .hamburger-icon { width: 20px; height: 14px; display: flex; flex-direction: column; justify-content: space-between; }
     .hamburger-icon span { display: block; height: 2px; background-color: #006a4e; border-radius: 1px; }
 
-    .print-bar {
-      display: flex;
-      justify-content: center;
-      padding: 10px 0;
-      background-color: #f4fbf7;
-    }
-
-    .btn-action {
-      background-color: #3b7ddd;
-      color: #ffffff;
-      border: 1px solid #2f65b9;
-      padding: 6px 22px;
-      border-radius: 4px;
-      font-size: 14px;
-      font-weight: bold;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      text-decoration: none;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-    }
-
-    .scroll-container {
-      flex: 1;
+    /* Full Width Horizontal Scroll Wrapper */
+    .receipt-wrapper {
       width: 100%;
       overflow-x: auto;
-      overflow-y: auto;
-      background-color: #f4fbf7;
-      padding: 0 10px 20px 10px;
+      background-color: #ffffff;
+      padding: 10px;
       -webkit-overflow-scrolling: touch;
     }
 
+    /* Fixed Paper Width matching original site */
     .receipt-paper {
       width: 780px;
       margin: 0 auto;
       background: #ffffff;
-      padding: 10px;
+      color: #000000;
+      font-size: 13px;
+      line-height: 1.4;
       border: 1px dashed #7eb382;
       border-radius: 6px;
+      padding: 10px;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
 
+    /* Action Toolbar */
+    .action-toolbar {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      padding: 10px;
+      background: #f0f0f0;
+      border-bottom: 1px solid #ccc;
+    }
+    .btn { background-color: #337ab7; color: #ffffff; border: 1px solid #2e6da4; padding: 6px 18px; font-size: 14px; font-weight: bold; border-radius: 4px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+
+    /* রসিদ ছবির স্টাইল */
     .receipt-img {
       width: 100%;
       height: auto;
@@ -87,53 +75,67 @@
 
     .error-msg {
       color: #d32f2f;
-      padding: 30px;
+      padding: 40px;
       font-weight: bold;
       text-align: center;
       font-size: 16px;
     }
 
+    .footer-gradient { height: 35px; background: linear-gradient(to top, #006a4e, #ffffff); width: 100%; margin-top: 20px; }
+
     @media print {
-      .top-sticky-header, .print-bar, .no-print { display: none !important; }
-      body { background: #fff; }
-      .scroll-container { overflow: visible; padding: 0; background: #fff; }
+      .top-banner, .navbar, .menu-bar, .action-toolbar, .footer-gradient, .no-print { display: none !important; }
+      body { background: #fff; padding: 0; }
+      .receipt-wrapper { overflow: visible; padding: 0; }
       .receipt-paper { width: 100%; border: none; padding: 0; }
     }
   </style>
 </head>
 <body>
 
-  <div class="top-sticky-header">
-    <div class="top-banner" id="live-date"></div>
+  <!-- Controls Area (শুধু প্রিন্ট বাটন রাখা হয়েছে) -->
+  <div class="action-toolbar no-print">
+    <button class="btn" onclick="window.print()">🖨️ প্রিন্ট</button>
+  </div>
 
-    <div class="navbar">
-      <div class="brand-section">
-        <div class="logo-box">৳</div>
-        <div class="brand-title">ভূমি উন্নয়ন কর</div>
-      </div>
-      <div class="nav-controls">
-        <div class="lang-toggle">
-          <span class="lang-btn bn">বাং</span>
-          <span class="lang-btn en">EN</span>
-        </div>
-        <button class="login-btn">লগইন <span>▼</span></button>
-      </div>
+  <!-- Government Website Top Section -->
+  <div class="top-banner" id="live-date"></div>
+
+  <div class="navbar">
+    <div class="brand-section">
+      <div class="logo-box">৳</div>
+      <div class="brand-title">ভূমি উন্নয়ন কর</div>
     </div>
-
-    <div class="menu-bar">
-      <div class="hamburger-icon"><span></span><span></span><span></span></div>
+    <div class="nav-controls">
+      <div class="lang-toggle">
+        <span class="lang-btn bn">বাং</span>
+        <span class="lang-btn en">EN</span>
+      </div>
+      <button class="login-btn">
+        লগইন <span>▼</span>
+      </button>
     </div>
   </div>
 
-  <div class="print-bar no-print">
-    <button class="btn-action" onclick="window.print()">🖨️ প্রিন্ট</button>
+  <div class="menu-bar">
+    <div class="hamburger-icon">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
   </div>
 
-  <div class="scroll-container">
-    <div class="receipt-paper" id="receipt"></div>
+  <!-- Smooth Horizontal Scrolling Container -->
+  <div class="receipt-wrapper">
+    <div class="receipt-paper" id="receipt">
+      <!-- ডায়নামিক রসিদ ছবি এখানে লোড হবে -->
+    </div>
   </div>
+
+  <div class="footer-gradient"></div>
 
   <script>
+    // লাইভ বাংলা তারিখ সেট করার স্ক্রিপ্ট
     function updateDateOnly() {
       const now = new Date();
       const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
@@ -141,15 +143,16 @@
     }
     updateDateOnly();
 
+    // ইউআরএল থেকে ফাইল নাম রিড করে রসিদ লোড করার স্ক্রিপ্ট
     const urlParams = new URLSearchParams(window.location.search);
     let requestedFile = urlParams.get('file');
     const receiptBox = document.getElementById('receipt');
 
     if (requestedFile) {
       const fileUrl = `receipts/${requestedFile}`;
-      receiptBox.innerHTML = `<img src="${fileUrl}" alt="রসিদ ছবি" class="receipt-img">`;
+      receiptBox.innerHTML = `<img src="${fileUrl}" alt="ভূমি উন্নয়ন কর রসিদ" class="receipt-img">`;
     } else {
-      receiptBox.innerHTML = `<div class="error-msg">⚠️ দুঃখিত, কোনো রসিদ পাওয়া যায়নি। সঠিক লিংক ব্যবহার করুন।</div>`;
+      receiptBox.innerHTML = `<div class="error-msg">⚠️ দুঃখিত, কোনো রসিদ পাওয়া যায়নি। সঠিক লিংক ব্যবহার করুন (যেমন: ?file=102.jpg)।</div>`;
     }
   </script>
 </body>
