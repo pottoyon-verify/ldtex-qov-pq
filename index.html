@@ -1,350 +1,72 @@
 <!DOCTYPE html>
 <html lang="bn">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>দাখিলা যাচাই</title>
-
-<style>
-*{
-  box-sizing:border-box;
-}
-
-html,body{
-  margin:0;
-  padding:0;
-  width:100%;
-  height:100%;
-  background:#eef2f1;
-  font-family:"Noto Sans Bengali",Arial,sans-serif;
-}
-
-body{
-  display:flex;
-  justify-content:center;
-}
-
-.frame{
-  width:100%;
-  max-width:520px;
-  height:100vh;
-  background:#fff;
-  display:flex;
-  flex-direction:column;
-  overflow:hidden;
-  border-left:3px dotted #16834a;
-  border-right:3px dotted #16834a;
-}
-
-/* তারিখ */
-.date{
-  flex-shrink:0;
-  background:#087b55;
-  color:#fff;
-  text-align:center;
-  font-size:18px;
-  font-weight:bold;
-  padding:12px 5px;
-}
-
-/* প্রিন্ট */
-.print-box{
-  flex-shrink:0;
-  background:#f5f5f5;
-  text-align:center;
-  padding:8px;
-}
-
-.print-btn{
-  background:#087bd1;
-  color:white;
-  border:0;
-  border-radius:6px;
-  padding:10px 30px;
-  font-size:17px;
-  font-weight:bold;
-  cursor:pointer;
-}
-
-/* PDF / ছবি */
-.viewer{
-  flex:1;
-  min-height:0;
-  overflow:auto;
-  background:#e9eeee;
-  padding:8px;
-  text-align:center;
-}
-
-.viewer img{
-  display:block;
-  width:100%;
-  height:auto;
-  margin:auto;
-}
-
-.viewer iframe{
-  display:block;
-  width:100%;
-  height:100%;
-  min-height:100%;
-  border:0;
-  background:#fff;
-}
-
-.loading{
-  padding-top:80px;
-  color:#555;
-  font-size:18px;
-}
-
-.error{
-  padding:60px 20px;
-  color:#d33;
-  font-size:20px;
-  font-weight:bold;
-}
-
-/* নিচের ডিজাইন */
-.bottom{
-  flex-shrink:0;
-  height:32px;
-  background:linear-gradient(
-    90deg,
-    #087b55,
-    #43b66c,
-    #087b55
-  );
-}
-
-/* প্রিন্টের সময় */
+  <head>
+    <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+        <title>ভূমি উন্নয়ন কর - দাখিলা যাচাই</title>
+        <style>
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;width:100%;height:100%;background:#eef3f1;font-family:"Noto Sans Bengali",Arial,sans-serif}
+body{display:flex;justify-content:center;overflow:hidden}
+.frame{width:100%;max-width:830px;height:100vh;background:#fff;display:flex;flex-direction:column;overflow:hidden;border-left:4px dotted #16834a;border-right:4px dotted #16834a}
+.date{flex-shrink:0;min-height:98px;display:flex;align-items:center;justify-content:center;background:#087f58;color:#fff;text-align:center;font-size:28px;font-weight:bold;padding:10px}
+.print-box{flex-shrink:0;height:120px;background:#f5f5f5;display:flex;align-items:center;justify-content:center}
+.print-btn{background:#087bd1;color:#fff;border:0;border-radius:12px;padding:16px 55px;font-size:28px;font-weight:bold;cursor:pointer;box-shadow:0 2px 4px rgba(0,0,0,.2)}
+.viewer{flex:1;min-height:0;overflow:auto;background:#f5fbe8;padding:10px 18px;text-align:center;-webkit-overflow-scrolling:touch}
+.viewer img{display:block;width:100%;height:auto;max-width:none;margin:0 auto}
+.loading{padding-top:80px;color:#555;font-size:22px}
+.error{padding:70px 20px;color:#c62828;font-size:24px;font-weight:bold}
+.bottom{flex-shrink:0;height:58px;background:linear-gradient(90deg,#fff 0%,#73b78d 25%,#087b55 50%,#73b78d 75%,#fff 100%)}
+@media(max-width:600px){.date{min-height:98px;font-size:25px}.print-box{height:120px}.print-btn{font-size:26px;padding:15px 48px}.viewer{padding:8px 16px}.bottom{height:58px}}
 @media print{
-
-  body{
-    background:white;
-  }
-
-  .frame{
-    max-width:none;
-    height:auto;
-    border:0;
-  }
-
-  .date,
-  .print-box,
-  .bottom{
-    display:none;
-  }
-
-  .viewer{
-    overflow:visible;
-    padding:0;
-    background:white;
-  }
-
-  .viewer img{
-    width:100%;
-  }
-
-  .viewer iframe{
-    display:none;
-  }
+html,body{width:auto;height:auto;overflow:visible;background:#fff}
+.frame{width:100%;height:auto;max-width:none;border:0;overflow:visible}
+.date,.print-box,.bottom{display:none}
+.viewer{display:block;width:100%;height:auto;overflow:visible;padding:0;background:#fff}
+.viewer img{display:block;width:100%;height:auto}
 }
 </style>
-</head>
-
-<body>
-
-<div class="frame">
-
-  <div class="date" id="date"></div>
-
-  <div class="print-box">
-    <button class="print-btn" onclick="printFile()">
-      🖨 প্রিন্ট
-    </button>
-  </div>
-
-  <div class="viewer" id="viewer">
-    <div class="loading">ফাইল লোড হচ্ছে...</div>
-  </div>
-
-  <div class="bottom"></div>
-
-</div>
-
-
-<script>
-
-/* =========================
-   বাংলা তারিখ/দিন
-========================= */
-
-function showDate(){
-
-  const now = new Date();
-
-  const days = [
-    "রবিবার",
-    "সোমবার",
-    "মঙ্গলবার",
-    "বুধবার",
-    "বৃহস্পতিবার",
-    "শুক্রবার",
-    "শনিবার"
-  ];
-
-  const day = days[now.getDay()];
-
-  const date = String(now.getDate()).padStart(2,"0");
-
-  const month = String(now.getMonth()+1).padStart(2,"0");
-
-  const year = now.getFullYear();
-
-  document.getElementById("date").innerText =
-    `${date}-${month}-${year} | ${day}`;
-}
-
-
-/* =========================
-   QR লিংক থেকে ফাইল নেওয়া
-   উদাহরণ:
-
-   ?file=101.pdf
-
-   ?file=102.pdf
-========================= */
-
-function loadFile(){
-
-  const params =
-    new URLSearchParams(window.location.search);
-
-  const file = params.get("file");
-
-  const viewer =
-    document.getElementById("viewer");
-
-  if(!file){
-
-    viewer.innerHTML = `
-      <div class="error">
-        ⚠️ কোনো রসিদ পাওয়া যায়নি
-        <br><br>
-        সঠিক QR কোড ব্যবহার করুন।
-      </div>
-    `;
-
-    return;
-  }
-
-
-  /* নিরাপত্তার জন্য path বাদ দেওয়া */
-  const cleanFile =
-    file.split("/").pop();
-
-
-  const fileUrl =
-    "receipts/" +
-    encodeURIComponent(cleanFile);
-
-
-  /* ফাইলের ধরন */
-
-  const extension =
-    cleanFile
-      .split(".")
-      .pop()
-      .toLowerCase();
-
-
-  /* ছবি */
-
-  if(
-    extension === "jpg" ||
-    extension === "jpeg" ||
-    extension === "png" ||
-    extension === "webp" ||
-    extension === "gif"
-  ){
-
-    viewer.innerHTML = "";
-
-    const img =
-      document.createElement("img");
-
-    img.src = fileUrl;
-
-    img.alt = "রসিদ";
-
-    img.onload = function(){
-      viewer.scrollTop = 0;
-    };
-
-    img.onerror = function(){
-
-      viewer.innerHTML = `
-        <div class="error">
-          ⚠️ রসিদ পাওয়া যায়নি
+      </head>
+      <body>
+        <div class="frame">
+          <div class="date" id="date">
+          </div>
+          <div class="print-box">
+            <button class="print-btn" onclick="printImage()">🖨️ প্রিন্ট</button>
+          </div>
+          <div class="viewer" id="viewer">
+            <div class="loading">রসিদ লোড হচ্ছে...</div>
+          </div>
+          <div class="bottom">
+          </div>
         </div>
-      `;
-    };
-
-    viewer.appendChild(img);
-
-  }
-
-
-  /* PDF */
-
-  else if(extension === "pdf"){
-
-    viewer.innerHTML = "";
-
-    const iframe =
-      document.createElement("iframe");
-
-    iframe.src = fileUrl;
-
-    iframe.title = "PDF রসিদ";
-
-    viewer.appendChild(iframe);
-
-  }
-
-
-  /* অন্য ফাইল */
-
-  else{
-
-    viewer.innerHTML = `
-      <div class="error">
-        ⚠️ এই ফাইলটি সমর্থিত নয়
-      </div>
-    `;
-  }
+        <script>
+function showDate(){
+ const now=new Date();
+ const days=["রবিবার","সোমবার","মঙ্গলবার","বুধবার","বৃহস্পতিবার","শুক্রবার","শনিবার"];
+ const date=String(now.getDate()).padStart(2,"0");
+ const month=String(now.getMonth()+1).padStart(2,"0");
+ document.getElementById("date").innerText=`${date}-${month}-${now.getFullYear()} | ${days[now.getDay()]}`;
 }
-
-
-/* =========================
-   Print
-========================= */
-
-function printFile(){
-
-  window.print();
-
+function loadImage(){
+ const file=new URLSearchParams(window.location.search).get("file");
+ const viewer=document.getElementById("viewer");
+ if(!file){viewer.innerHTML='<div class="error">⚠️ কোনো রসিদ পাওয়া যায়নি<br><br>সঠিক QR কোড ব্যবহার করুন।</div>';return}
+ const cleanFile=file.split("/").pop();
+ const ext=cleanFile.split(".").pop().toLowerCase();
+ if(!["jpg","jpeg","png","webp"].includes(ext)){
+  viewer.innerHTML='<div class="error">⚠️ শুধু JPG / JPEG / PNG / WEBP রসিদ ব্যবহার করুন।</div>';return;
+ }
+ const img=document.createElement("img");
+ img.src="receipts/"+encodeURIComponent(cleanFile);
+ img.alt="দাখিলা রসিদ";
+ img.onerror=()=>{viewer.innerHTML=`<div class="error">⚠️ রসিদ পাওয়া যায়নি<br><br><small>${cleanFile}</small></div>`};
+ viewer.innerHTML="";
+ viewer.appendChild(img);
 }
-
-
-/* চালু */
-
+function printImage(){window.print()}
 showDate();
-loadFile();
-
+loadImage();
 </script>
-
-</body>
-</html>
+      </body>
+    </html>
