@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>ভূমি উন্নয়ন কর - রসিদ যাচাই</title>
+  <title>ভূমি উন্নয়ন কর - রসিদ যাচাই</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'SolaimanLipi', Arial, sans-serif; }
@@ -19,9 +19,9 @@
     .brand-title { font-size: 18px; font-weight: bold; color: #222222; }
     .nav-controls { display: flex; align-items: center; gap: 6px; }
     .lang-toggle { border: 1px solid #006a4e; border-radius: 4px; overflow: hidden; display: flex; }
-    .lang-btn { padding: 3px 7px; font-size: 12px; font-weight: bold; }
-    .lang-btn.bn { background-color: #006a4e; color: #ffffff; }
-    .lang-btn.en { background-color: #ffffff; color: #006a4e; }
+    .lang-btn { padding: 3px 7px; font-size: 12px; font-weight: bold; cursor: pointer; }
+    .lang-btn.active { background-color: #006a4e; color: #ffffff; }
+    .lang-btn.inactive { background-color: #ffffff; color: #006a4e; }
     .login-btn { background-color: #006a4e; color: #ffffff; border: none; padding: 5px 10px; font-size: 12px; font-weight: bold; border-radius: 12px; display: flex; align-items: center; gap: 3px; }
 
     /* Hamburger Line */
@@ -93,9 +93,10 @@
 </head>
 <body>
 
-  <!-- Controls Area (শুধু প্রিন্ট বাটন রাখা হয়েছে) -->
+  <!-- Controls Area -->
   <div class="action-toolbar no-print">
     <button class="btn" onclick="window.print()">🖨️ প্রিন্ট</button>
+    <button class="btn" onclick="downloadImage()">📥 ডাউনলোড</button>
   </div>
 
   <!-- Government Website Top Section -->
@@ -104,14 +105,14 @@
   <div class="navbar">
     <div class="brand-section">
       <div class="logo-box">৳</div>
-      <div class="brand-title">ভূমি উন্নয়ন কর</div>
+      <div class="brand-title" id="brandTitle">ভূমি উন্নয়ন কর</div>
     </div>
     <div class="nav-controls">
       <div class="lang-toggle">
-        <span class="lang-btn bn">বাং</span>
-        <span class="lang-btn en">EN</span>
+        <span class="lang-btn active" id="btnBn" onclick="setLanguage('bn')">বাং</span>
+        <span class="lang-btn inactive" id="btnEn" onclick="setLanguage('en')">EN</span>
       </div>
-      <button class="login-btn">
+      <button class="login-btn" id="loginText">
         লগইন <span>▼</span>
       </button>
     </div>
@@ -128,31 +129,93 @@
   <!-- Smooth Horizontal Scrolling Container -->
   <div class="receipt-wrapper">
     <div class="receipt-paper" id="receipt">
-      <!-- ডায়নামিক রসিদ ছবি এখানে লোড হবে -->
+      <!-- ডায়নামিক রসিদ ছবি এখানে লোড হবে -->
     </div>
   </div>
 
   <div class="footer-gradient"></div>
 
   <script>
-    // লাইভ বাংলা তারিখ সেট করার স্ক্রিপ্ট
-    function updateDateOnly() {
-      const now = new Date();
-      const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
-      document.getElementById('live-date').innerText = now.toLocaleDateString('bn-BD', options);
+    // নির্দিষ্ট ফরম্যাটে তারিখ সেট করার ফাংশন
+    function updateDates(lang) {
+      if (lang === 'en') {
+        document.getElementById('live-date').innerText = "4 September 2026";
+      } else {
+        document.getElementById('live-date').innerText = "২০ ভাদ্র ১৪৩৩ / ৪ সেপ্টেম্বর ২০২৬";
+      }
     }
-    updateDateOnly();
 
-    // ইউআরএল থেকে ফাইল নাম রিড করে রসিদ লোড করার স্ক্রিপ্ট
+    // ভাষা পরিবর্তন করার ফাংশন (বাংলা / ইংরেজি)
+    function setLanguage(lang) {
+      const btnBn = document.getElementById('btnBn');
+      const btnEn = document.getElementById('btnEn');
+      const brandTitle = document.getElementById('brandTitle');
+      const loginText = document.getElementById('loginText');
+
+      if (lang === 'en') {
+        btnEn.className = 'lang-btn active';
+        btnBn.className = 'lang-btn inactive';
+        brandTitle.innerText = 'Land Development Tax';
+        loginText.innerHTML = 'Login <span>▼</span>';
+        updateDates('en');
+      } else {
+        btnBn.className = 'lang-btn active';
+        btnEn.className = 'lang-btn inactive';
+        brandTitle.innerText = 'ভূমি উন্নয়ন কর';
+        loginText.innerHTML = 'লগইন <span>▼</span>';
+        updateDates('bn');
+      }
+    }
+
+    updateDates('bn');
+
+    // ইউআরএল থেকে ফাইল নাম রিড করে রসিদ লোড করার স্ক্রিপ্ট (এক্সটেনশন ছাড়া লেখার সুবিধা সহ)
     const urlParams = new URLSearchParams(window.location.search);
     let requestedFile = urlParams.get('file');
     const receiptBox = document.getElementById('receipt');
+    let fileUrl = "";
 
     if (requestedFile) {
-      const fileUrl = `receipts/${requestedFile}`;
-      receiptBox.innerHTML = `<img src="${fileUrl}" alt="ভূমি উন্নয়ন কর রসিদ" class="receipt-img">`;
+      requestedFile = requestedFile.trim();
+      
+      // যদি .jpg বা অন্য এক্সটেনশন না দেওয়া থাকে, তবে স্বয়ংক্রিয়ভাবে হ্যান্ডেল করবে
+      if (!requestedFile.includes('.')) {
+        if (/^\d+$/.test(requestedFile)) {
+          requestedFile = `dakhila-${requestedFile}.jpg`;
+        } else {
+          requestedFile = `${requestedFile}.jpg`;
+        }
+      }
+      
+      fileUrl = `receipts/${requestedFile}`;
+      receiptBox.innerHTML = `<img src="${fileUrl}" alt="Land Tax Receipt" class="receipt-img" id="receiptImg">`;
+      
+      setTimeout(() => {
+        const imgElement = document.getElementById('receiptImg');
+        if (imgElement) {
+          imgElement.onerror = function() {
+            receiptBox.innerHTML = `<div class="error-msg">⚠️ রসিদ পাওয়া যায়নি / Receipt not found<br><br><small>${requestedFile}</small></div>`;
+            fileUrl = "";
+          };
+        }
+      }, 100);
+
     } else {
-      receiptBox.innerHTML = `<div class="error-msg">⚠️ দুঃখিত, কোনো রসিদ পাওয়া যায়নি। সঠিক লিংক ব্যবহার করুন (যেমন: ?file=102.jpg)।</div>`;
+      receiptBox.innerHTML = `<div class="error-msg">⚠️ দুঃখিত, কোনো রসিদ পাওয়া যায়নি। সঠিক লিংক ব্যবহার করুন (যেমন: ?file=1 বা ?file=dakhila-102)।</div>`;
+    }
+
+    // ডাউনলোড ফাংশন
+    function downloadImage() {
+      if (!fileUrl) {
+        alert("ডাউনলোড করার মতো কোনো বৈধ রসিদ পাওয়া যায়নি।");
+        return;
+      }
+      const a = document.createElement("a");
+      a.href = fileUrl;
+      a.download = "";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
     }
   </script>
 </body>
